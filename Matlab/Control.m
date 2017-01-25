@@ -1,33 +1,77 @@
 clc, clearvars;
 
-%% Connect to server
-u                  = udp('192.168.0.197',8010,'LocalPort',9091);
-u.Timeout          = 10; % Maximum time-out in seconds
-u.OutputBufferSize = 20000;
-fopen(u);
+global keys;
 
-%% Reference in mm/mrad
-xstr     = 50;
-ystr     = 50;
-psistr   = 0;
+%% Remember what keys are pressed
+keys = zeros(5,1);
 
-signxs   = num2str(1);
-signys   = num2str(1);
-signpsis = num2str(1);
+%% Open figure (to capture keyboard events)
+set(gcf,'KeyPressFcn',@(~,event) pressed(event.Key),...
+    'KeyReleaseFcn',@(~,event) released(event.Key));
 
-if sign(xstr)   == -1, signxs   = num2str(0); end
-if sign(ystr)   == -1, signys   = num2str(0); end
-if sign(psistr) == -1, signpsis = num2str(0); end
+%% Update pressed keys
+function pressed(key)
+global keys;
+switch key
+    case 'uparrow'
+        keys(1) = 1;
+        keys(2) = 0;
+    case 'downarrow'
+        keys(1) = 0;
+        keys(2) = 1;
+    case 'leftarrow'
+        keys(3) = 1;
+        keys(4) = 0;
+    case 'rightarrow'
+        keys(3) = 0;
+        keys(4) = 1;
+    case 'return'
+        keys(5) = 1;
+end
+drive;
+end
 
-xstr   = num2str(xstr);
-ystr   = num2str(ystr);
-psistr = num2str(psistr);
+%% Update released keys
+function released(key)
+global keys;
+switch key
+    case 'uparrow'
+        keys(1) = 0;
+    case 'downarrow'
+        keys(2) = 0;
+    case 'leftarrow'
+        keys(3) = 0;
+    case 'rightarrow'
+        keys(4) = 0;
+end
+drive;
+end
 
-% Match with Pi
-data = strcat(num2str(1),'x',xstr,'a',signxs,'y',ystr,'b',signys,...
-    'p',psistr,'c',signpsis,'t');
+%% Communicate with Pi
+function drive
+global keys;
+persistent u;
 
-fwrite(u,data);
+% Connect
+if isempty(u)
+    u = udp('192.168.0.197',8010,'LocalPort',9091);
+    u.Timeout = 10;
+    u.OutputBufferSize = 20000;
+    fopen(u);
+end
 
-%% Disconnect from server
-fclose(u);
+% Disconnect
+if keys(5)
+    fclose(u);
+    clear u;
+    close;
+    return;
+end
+
+forward = 50*(keys(1)-keys(2));
+rotate  = 50*(keys(3)-keys(4));
+
+% Send message
+fwrite(u,sprintf('1f%da%dr%db%dt',abs(forward),forward>=0,...
+    abs(rotate),rotate*forward>=0));
+end
