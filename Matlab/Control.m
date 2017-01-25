@@ -6,7 +6,7 @@ global keys;
 keys = zeros(5,1);
 
 %% Open figure (to capture keyboard events)
-set(gcf,'KeyPressFcn',@(~,event) pressed(event.Key),...
+set(figure(1),'KeyPressFcn',@(~,event) pressed(event.Key),...
     'KeyReleaseFcn',@(~,event) released(event.Key));
 
 %% Update pressed keys
@@ -25,7 +25,7 @@ switch key
     case 'rightarrow'
         keys(3) = 0;
         keys(4) = 1;
-    case 'return'
+    case 'escape'
         keys(5) = 1;
 end
 drive;
@@ -74,4 +74,18 @@ rotate  = 50*(keys(3)-keys(4));
 % Send message
 fwrite(u,sprintf('1f%da%dr%db%dt',abs(forward),forward>=0,...
     abs(rotate),rotate*forward>=0));
+
+tmp = [-rotate; forward];
+len = norm(tmp);
+arr = tmp/len;
+
+figure(1);
+plot(0,0,'k.','MarkerSize',50);
+hold on;
+quiver(0,0,arr(1),arr(2),0,'k','LineWidth',5,'MaxHeadSize',len/50);
+axis([-1 1 -1 1]);
+axis square;
+axis off;
+hold off;
+
 end
