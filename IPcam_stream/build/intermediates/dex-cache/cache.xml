@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Users\jsenden\Desktop\SimpleMjpegView\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="22.0.1"
+        sha1="28fc00d255cea976d54da6b056376d64f21f4fd1">
+        <dex dex="C:\Users\jsenden\Desktop\SimpleMjpegView\app\build\intermediates\pre-dexed\debug\instant-run-bootstrap_2b6fe111b0bcb17dd225fc3f376e78a41d686778.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\jsenden\Desktop\SimpleMjpegView\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="22.0.1"
+        sha1="d20dc965addb76aa133f42502307c5aea64a4891">
+        <dex dex="C:\Users\jsenden\Desktop\SimpleMjpegView\app\build\intermediates\pre-dexed\debug\instant-run_bf73fe1617f24ee5a5cbd150a20ad1cb7a148516.jar" />
+    </item>
+
+</items>
