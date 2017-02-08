@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Tomorrow never Pi</string>
+    <string name="button_start">Engine Start</string>
+    <string name="moveBackward" />
+    <array name="Control">
+        <item>C1</item>
+        <item>C2</item>
+        <item>C3</item>
+        <item>C4</item>
+    </array>array>
+</resources>
