@@ -107,7 +107,6 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         sb.append(ip_command);
         URL = new String(sb);
 
-        setContentView(R.layout.activity_control);
         mv = (MjpegView) findViewById(R.id.mv);
         if (mv != null) {
             mv.setResolution(width, height);
