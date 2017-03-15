@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="horizontal"
     android:screenOrientation="landscape"
-    android:id="@+id/activity_control">
+    android:id="@+id/activity_control"
+    android:background="@drawable/background_control">
 
     <com.bond.controloverlay.MjpegView
         android:id="@+id/mv"
@@ -14,72 +16,60 @@
         android:layout_weight="1"
         />
 
+
     <RelativeLayout
-        android:id="@+id/relativeLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_centerVertical="true"
+       android:id="@+id/relativeLayout1"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <TextView
-            android:id="@+id/textViewControl"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/moveForward"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:paddingBottom="10dp"
-            android:text="Vehicle Control" />
+            android:text="Forward"/>
+
+        <Button
+            android:id="@+id/moveBackward"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/moveForward"
+            android:layout_centerHorizontal="true"
+            android:text="Backward"/>
+
+   </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="25dp">
 
         <Button
             android:id="@+id/moveLeft"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/moveForward"
+            android:layout_centerVertical="true"
             android:text="Left" />
 
         <Button
             android:id="@+id/moveRight"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/moveLeft"
             android:layout_toRightOf="@+id/moveLeft"
+            android:layout_toEndOf="@+id/moveLeft"
             android:text="Right" />
 
-        <Button
-            android:id="@+id/moveForward"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textViewControl"
-            android:layout_centerHorizontal="true"
-            android:text="Forward"
-            android:onClick="DisplayForward"/>
-
-        <Button
-            android:id="@+id/moveBackward"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/moveLeft"
-            android:layout_centerHorizontal="true"
-            android:text="Backward"
-            android:onClick="DisplayBackward"/>
-
     </RelativeLayout>
-
-
-
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="168dp"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:gravity="center" />
-
 
 
 </RelativeLayout>

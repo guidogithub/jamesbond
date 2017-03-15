@@ -109,7 +109,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
             Bitmap bm = Bitmap.createBitmap(b.width(), b.height(), Bitmap.Config.ARGB_8888);
 
             Canvas c = new Canvas(bm);
-            p.setColor(overlayBackgroundColor);
             c.drawRect(0, 0, b.width(), b.height(), p);
             p.setColor(overlayTextColor);
             c.drawText(fps, -b.left, b.bottom - b.top - p.descent(), p);
@@ -147,7 +146,9 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                         c = mSurfaceHolder.lockCanvas();
                         synchronized (mSurfaceHolder) {
 
-                            c.drawBitmap(bmp, null, destRect, p);
+                            if (c != null && bmp != null && destRect != null && p != null) {
+                                c.drawBitmap(bmp, null, destRect, p);
+                            }
 
                             if (showFps) {
                                 p.setXfermode(mode);

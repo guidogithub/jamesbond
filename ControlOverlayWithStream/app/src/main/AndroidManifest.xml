@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bond.controloverlay">
-
+    package="com.bond.controloverlay"
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="9"  android:targetSdkVersion="22" />
+    <uses-sdk android:minSdkVersion="8"  android:targetSdkVersion="22" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -18,19 +17,11 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity android:name=".ControlActivity"></activity>
-
-        <activity android:name=".MjpegActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <activity android:name=".SettingsActivity"
             android:label="@string/settings"

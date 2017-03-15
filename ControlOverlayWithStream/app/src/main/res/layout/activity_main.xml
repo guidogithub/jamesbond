@@ -7,31 +7,26 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:screenOrientation="portrait"
-    android:background="@drawable/start_screen">
+    android:background="@drawable/jb_start">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_start"
-        android:layout_marginBottom="29dp"
+
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:onClick="sendStart"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:id="@+id/button"
-        android:background="@android:color/holo_red_dark"
-        android:textColor="#ffffff" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome to 5Rover app!"
-        android:layout_marginTop="32dp"
-        android:textColor="#FFFFFF"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:id="@+id/textView"
-        android:layout_alignParentTop="true"
+        android:src="@drawable/enginestart"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        android:layout_marginBottom="190dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/text"
+        />
 
 </RelativeLayout>

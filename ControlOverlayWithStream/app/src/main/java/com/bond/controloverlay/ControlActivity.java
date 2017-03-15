@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,8 +27,8 @@ import org.apache.http.params.HttpParams;
 import java.io.IOException;
 import java.net.URI;
 
-public class ControlActivity extends AppCompatActivity implements View.OnClickListener {
-    Boolean[] Control_matrix = new Boolean[4];
+public class ControlActivity extends AppCompatActivity implements View.OnTouchListener {
+    Boolean[] Control_matrix;
     private static final boolean DEBUG = false;
     private static final String TAG = "MJPEG";
 
@@ -48,6 +49,10 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     private String ip_command = "?action=stream";
 
     private boolean suspending = false;
+
+    static {
+        System.loadLibrary("ImageProc");
+    }
 
     final Handler handler = new Handler();
     @Override
@@ -72,11 +77,80 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         Button Left = (Button) findViewById(R.id.moveLeft);
         Button Right = (Button) findViewById(R.id.moveRight);
 
+        Control_matrix = new Boolean[4];
+        Control_matrix[0] = false;
+        Control_matrix[1] = false;
+        Control_matrix[2] = false;
+        Control_matrix[3] = false;
+
         // place on click listeners on the buttons
-        Forward.setOnClickListener(this);
-        Backward.setOnClickListener(this);
-        Left.setOnClickListener(this);
-        Right.setOnClickListener(this);
+        Forward.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                // TODO Auto-generated method stub
+                if (event.getAction()== MotionEvent.ACTION_DOWN) {
+                    Control_matrix[0] = true;
+
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Control_matrix[0] = false;
+
+                }
+                return false;
+
+            }
+        });
+
+        Backward.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                // TODO Auto-generated method stub
+                int action = event.getAction();
+                if (action == MotionEvent.ACTION_DOWN) {
+                    Control_matrix[1] = true;
+
+                } else if (action == MotionEvent.ACTION_UP) {
+                    Control_matrix[1] = false;
+
+                }
+                return false;
+
+            }
+        });
+
+        Left.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                // TODO Auto-generated method stub
+                int action = event.getAction();
+                if (action == MotionEvent.ACTION_DOWN) {
+                    Control_matrix[2] = true;
+                } else if (action == MotionEvent.ACTION_UP) {
+                    Control_matrix[2] = false;
+                }
+                return false;
+
+            }
+        });
+
+        Right.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                // TODO Auto-generated method stub
+                int action = event.getAction();
+                if (action == MotionEvent.ACTION_DOWN) {
+                    Control_matrix[3] = true;
+                } else if (action == MotionEvent.ACTION_UP) {
+                    Control_matrix[3] = false;
+
+                }
+                return false;
+
+            }
+        });
 
         SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
         width = preferences.getInt("width", width);
@@ -117,43 +191,8 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
-    public void onClick(View v) {
-
-        TextView booleanTextView;
-        booleanTextView = (TextView)findViewById(R.id.textView1);
-        int targetId = v.getId(); // find out which id (button) has triggerd the event
-            if (targetId == R.id.moveForward) {
-                //Toast.makeText(getApplicationContext(), "The Forward button is pressed", Toast.LENGTH_SHORT).show();
-                Control_matrix[0]=true; // set boolean to true
-            } else if (targetId == R.id.moveBackward) {
-                //Toast.makeText(getApplicationContext(), "The Backward button is pressed", Toast.LENGTH_SHORT).show();
-                Control_matrix[1]=true; // set boolean to true
-            } else if (targetId == R.id.moveLeft) {
-                //Toast.makeText(getApplicationContext(), "The Left button is pressed", Toast.LENGTH_SHORT).show();
-                Control_matrix[2]=true; // set boolean to true
-            } else {
-               // Toast.makeText(getApplicationContext(), "The Right button is pressed", Toast.LENGTH_SHORT).show();
-                Control_matrix[3]=true; // set boolean to true
-            }
-
-        // the code below toasts the matrix after each click
-//        Printing integer array list values on screen.
-//         note, array size is fixed (4)
-        StringBuilder builder = new StringBuilder();
-        for(int i=0; i < 4; i++)
-        {
-            builder.append("" + Control_matrix[i] + " ");
-        }
-        Toast.makeText(this, builder, Toast.LENGTH_LONG).show();
-
-
-        //Printing integer array list values on screen.
-         // note, array size is fixed (4)
-//       for(int i=0; i < 4; i++) {
-//
-//           booleanTextView.setText(booleanTextView.getText() + " " + Control_matrix[i] + " , ");
-//       }
-
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
     }
 
     @Override
