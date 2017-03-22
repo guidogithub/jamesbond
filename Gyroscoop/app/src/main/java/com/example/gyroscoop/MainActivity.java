@@ -15,12 +15,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private TextView status;
 
-    private float[] r0, lastRotation, calibratedRotation, tmp;
+    private float[] lastRotation; //, r0, calibratedRotation, tmp;
 
     private SensorManager sensorManager;
     private Sensor accelerometer, magneticField;
 
-    private float[] accelerometerReading, magneticFieldReading, calibratedOrientation;
+    private float[] accelerometerReading, magneticFieldReading, calibratedOrientation, lastOrientation, orientation0;
 
     private static class V3 {
         static void copy(float[] v, float[] src) {
@@ -88,25 +88,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Button calibrate = (Button)findViewById(R.id.button);
         calibrate.setOnClickListener(this);
 
-        this.r0 = M9.identity(new float[9]);
+        //this.r0 = M9.identity(new float[9]);
         this.lastRotation = M9.identity(new float[9]);
-        this.calibratedRotation = M9.identity(new float[9]);
-        this.tmp = M9.identity(new float[9]);
+        //this.calibratedRotation = M9.identity(new float[9]);
+        //this.tmp = M9.identity(new float[9]);
 
         this.accelerometerReading = new float[3];
         this.magneticFieldReading = new float[3];
         this.calibratedOrientation = new float[3];
+        this.lastOrientation = new float[3];
+        this.orientation0 = new float[3];
 
         this.updateView();
     }
 
     private void doCalibrate() {
-        M9.copy(this.r0, this.lastRotation);
+        //M9.copy(this.r0, this.lastRotation);
+        V3.copy(this.orientation0, this.lastOrientation);
     }
 
     private void calculateCalibratedRotation() {
+        /*
         M9.multiply(this.calibratedRotation, M9.transpose(this.tmp, this.r0), this.lastRotation);
-        SensorManager.getOrientation(this.calibratedRotation, this.calibratedOrientation);
+        SensorManager.getOrientation(this.calibratedRotation, this.calibratedOrientation);*/
+        V3.minus(this.calibratedOrientation, this.lastOrientation, this.orientation0);
         this.calibratedOrientation[0] *= 180.0 / Math.PI;
         this.calibratedOrientation[1] *= 180.0 / Math.PI;
         this.calibratedOrientation[2] *= 180.0 / Math.PI;
@@ -131,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         SensorManager.getRotationMatrix(
             this.lastRotation, null, this.accelerometerReading, this.magneticFieldReading
         );
+        SensorManager.getOrientation(this.lastRotation, this.lastOrientation);
 
         this.calculateCalibratedRotation();
         this.updateView();
