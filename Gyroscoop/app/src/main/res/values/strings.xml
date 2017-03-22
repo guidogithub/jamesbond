@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Gyroscoop</string>
+    <string name="buttonText">Calibreer</string>
+</resources>
