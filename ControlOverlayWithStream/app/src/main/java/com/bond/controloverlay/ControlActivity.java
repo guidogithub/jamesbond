@@ -25,15 +25,23 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.URI;
+import java.net.UnknownHostException;
+
+import static java.net.InetAddress.getByName;
 
 public class ControlActivity extends AppCompatActivity implements View.OnTouchListener {
-    Boolean[] Control_matrix;
+    int[] Control_matrix;
     private static final boolean DEBUG = false;
     private static final String TAG = "MJPEG";
 
     private MjpegView mv = null;
     String URL;
+    String str;
 
     // for settings (network and resolution)
     private static final int REQUEST_SETTINGS = 0;
@@ -77,11 +85,13 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
         Button Left = (Button) findViewById(R.id.moveLeft);
         Button Right = (Button) findViewById(R.id.moveRight);
 
-        Control_matrix = new Boolean[4];
-        Control_matrix[0] = false;
-        Control_matrix[1] = false;
-        Control_matrix[2] = false;
-        Control_matrix[3] = false;
+        Control_matrix = new int[4];
+        Control_matrix[0] = 0;
+        Control_matrix[1] = 0;
+        Control_matrix[2] = 0;
+        Control_matrix[3] = 0;
+        str = "f00a0r00b0t";
+        final char[] strChars = str.toCharArray();
 
         // place on click listeners on the buttons
         Forward.setOnTouchListener(new View.OnTouchListener() {
@@ -90,12 +100,19 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
 
                 // TODO Auto-generated method stub
                 if (event.getAction()== MotionEvent.ACTION_DOWN) {
-                    Control_matrix[0] = true;
+                    Control_matrix[0] = 1;
+                    strChars[1] = '5';
+                    strChars[4] = '1';
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Control_matrix[0] = false;
-
+                    Control_matrix[0] = 0;
+                    strChars[1] = '0';
+                    strChars[4] = '1';
                 }
+
+
+                str = String.valueOf(strChars);
+                new SendMessageTask().execute(str);
                 return false;
 
             }
@@ -108,12 +125,17 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
                 // TODO Auto-generated method stub
                 int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) {
-                    Control_matrix[1] = true;
+                    Control_matrix[1] = 1;
+                    strChars[1] = '5';
+                    strChars[4] = '0';
 
                 } else if (action == MotionEvent.ACTION_UP) {
-                    Control_matrix[1] = false;
-
+                    Control_matrix[1] = 0;
+                    strChars[1] = '0';
+                    strChars[4] = '0';
                 }
+                str = String.valueOf(strChars);
+                new SendMessageTask().execute(str);
                 return false;
 
             }
@@ -126,10 +148,16 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
                 // TODO Auto-generated method stub
                 int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) {
-                    Control_matrix[2] = true;
+                    Control_matrix[2] = 1;
+                    strChars[6] = '5';
+                    strChars[9] = '1';
                 } else if (action == MotionEvent.ACTION_UP) {
-                    Control_matrix[2] = false;
+                    Control_matrix[2] = 0;
+                    strChars[6] = '0';
+                    strChars[9] = '1';
                 }
+                str = String.valueOf(strChars);
+                new SendMessageTask().execute(str);
                 return false;
 
             }
@@ -142,11 +170,16 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
                 // TODO Auto-generated method stub
                 int action = event.getAction();
                 if (action == MotionEvent.ACTION_DOWN) {
-                    Control_matrix[3] = true;
+                    Control_matrix[3] = 1;
+                    strChars[6] = '5';
+                    strChars[9] = '0';
                 } else if (action == MotionEvent.ACTION_UP) {
-                    Control_matrix[3] = false;
-
+                    Control_matrix[3] = 0;
+                    strChars[6] = '0';
+                    strChars[9] = '0';
                 }
+                str = String.valueOf(strChars);
+                new SendMessageTask().execute(str);
                 return false;
 
             }
@@ -311,6 +344,52 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
 
         protected void onPostExecute(Void v) {
             startActivity((new Intent(ControlActivity.this, ControlActivity.class)));
+        }
+    }
+    public class SendMessageTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+//
+        public Void doInBackground(String... str) {
+
+            DatagramSocket client_socket = null;
+
+            int server_port = 8010;
+
+            try {
+                client_socket = new DatagramSocket(server_port);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+            InetAddress IPAddress = null;
+            try {
+                IPAddress = getByName("192.168.43.177");
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+
+            //while (true)
+            // {
+
+            byte[] send_data = str[0].getBytes();
+            //System.out.println("Type Something (q or Q to quit): ");
+
+            DatagramPacket send_packet = new DatagramPacket(send_data, str[0].length(), IPAddress, server_port);
+
+            try {
+                assert client_socket != null;
+                Log.i(str[0],"start of send");
+                client_socket.send(send_packet);
+                Log.i(send_data.toString(),"end of send");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            client_socket.close();
+
+            // }
+            return null;
         }
     }
 }
