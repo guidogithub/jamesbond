@@ -46,20 +46,39 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
     // for settings (network and resolution)
     private static final int REQUEST_SETTINGS = 0;
 
-    private int width = 640;
-    private int height = 480;
+    private int width = 512;
+    private int height = 288;
 
     private int ip_ad1 = 192;
     private int ip_ad2 = 168;
-    private int ip_ad3 = 2;
-    private int ip_ad4 = 1;
+    private int ip_ad3 = 1;
+    private int ip_ad4 = 3;
     private int ip_port = 80;
-    private String ip_command = "?action=stream";
+    private String ip_command = "html/cam_pic_new.php?pDelay=40000";
 
     private boolean suspending = false;
 
     static {
         System.loadLibrary("ImageProc");
+    }
+
+    public String getIP() {
+        SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
+        ip_ad1 = preferences.getInt("ip_ad1", ip_ad1);
+        ip_ad2 = preferences.getInt("ip_ad2", ip_ad2);
+        ip_ad3 = preferences.getInt("ip_ad3", ip_ad3);
+        ip_ad4 = preferences.getInt("ip_ad4", ip_ad4);
+
+        StringBuilder sb = new StringBuilder();
+        String s_dot = ".";
+        sb.append(ip_ad1)
+                .append(s_dot)
+                .append(ip_ad2)
+                .append(s_dot)
+                .append(ip_ad3)
+                .append(s_dot)
+                .append(ip_ad4);
+        return new String(sb);
     }
 
     final Handler handler = new Handler();
@@ -112,7 +131,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
 
 
                 str = String.valueOf(strChars);
-                new SendMessageTask().execute(str);
+                new SendMessageTask(getIP()).execute(str);
                 return false;
 
             }
@@ -135,7 +154,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
                     strChars[4] = '0';
                 }
                 str = String.valueOf(strChars);
-                new SendMessageTask().execute(str);
+                new SendMessageTask(getIP()).execute(str);
                 return false;
 
             }
@@ -157,7 +176,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
                     strChars[9] = '1';
                 }
                 str = String.valueOf(strChars);
-                new SendMessageTask().execute(str);
+                new SendMessageTask(getIP()).execute(str);
                 return false;
 
             }
@@ -179,7 +198,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
                     strChars[9] = '0';
                 }
                 str = String.valueOf(strChars);
-                new SendMessageTask().execute(str);
+                new SendMessageTask(getIP()).execute(str);
                 return false;
 
             }
@@ -188,26 +207,15 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
         SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
         width = preferences.getInt("width", width);
         height = preferences.getInt("height", height);
-        ip_ad1 = preferences.getInt("ip_ad1", ip_ad1);
-        ip_ad2 = preferences.getInt("ip_ad2", ip_ad2);
-        ip_ad3 = preferences.getInt("ip_ad3", ip_ad3);
-        ip_ad4 = preferences.getInt("ip_ad4", ip_ad4);
         ip_port = preferences.getInt("ip_port", ip_port);
         ip_command = preferences.getString("ip_command", ip_command);
 
         StringBuilder sb = new StringBuilder();
         String s_http = "http://";
-        String s_dot = ".";
         String s_colon = ":";
         String s_slash = "/";
         sb.append(s_http);
-        sb.append(ip_ad1);
-        sb.append(s_dot);
-        sb.append(ip_ad2);
-        sb.append(s_dot);
-        sb.append(ip_ad3);
-        sb.append(s_dot);
-        sb.append(ip_ad4);
+        sb.append(this.getIP());
         sb.append(s_colon);
         sb.append(ip_port);
         sb.append(s_slash);
@@ -348,6 +356,13 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
     }
     public class SendMessageTask extends AsyncTask<String, Void, Void> {
 
+        private String ipString;
+
+        public SendMessageTask(String ipAddress) {
+            super();
+            this.ipString = ipAddress;
+        }
+
         @Override
 //
         public Void doInBackground(String... str) {
@@ -363,7 +378,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
             }
             InetAddress IPAddress = null;
             try {
-                IPAddress = getByName("192.168.43.177");
+                IPAddress = getByName(this.ipString);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }

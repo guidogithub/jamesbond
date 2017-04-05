@@ -31,15 +31,15 @@ public class MjpegActivity extends Activity {
     // for settings (network and resolution)
     private static final int REQUEST_SETTINGS = 0;
 
-    private int width = 640;
-    private int height = 480;
+    private int width = 512;
+    private int height = 288;
 
     private int ip_ad1 = 192;
     private int ip_ad2 = 168;
-    private int ip_ad3 = 2;
-    private int ip_ad4 = 1;
+    private int ip_ad3 = 1;
+    private int ip_ad4 = 3;
     private int ip_port = 80;
-    private String ip_command = "?action=stream";
+    private String ip_command = "html/cam_pic_new.php?pDelay=40000";
 
     private boolean suspending = false;
 
