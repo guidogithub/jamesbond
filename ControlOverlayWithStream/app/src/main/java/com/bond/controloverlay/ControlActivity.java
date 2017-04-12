@@ -91,7 +91,8 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
     }
 
     private void stopSendingMessages() {
-        messageTimer.cancel();
+        if(messageTimer != null)
+            messageTimer.cancel();
     }
 
     @Override
