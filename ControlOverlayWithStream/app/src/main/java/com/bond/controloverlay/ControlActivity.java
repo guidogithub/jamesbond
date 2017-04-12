@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,8 +13,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -31,10 +28,12 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static java.net.InetAddress.getByName;
 
-public class ControlActivity extends AppCompatActivity implements View.OnTouchListener {
+public class ControlActivity extends AppCompatActivity {
     int[] Control_matrix;
     private static final boolean DEBUG = false;
     private static final String TAG = "MJPEG";
@@ -56,7 +55,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
     private int ip_port = 80;
     private String ip_command = "html/cam_pic_new.php?pDelay=40000";
 
-    private boolean suspending = false;
+    private Timer messageTimer;
 
     static {
         System.loadLibrary("ImageProc");
@@ -81,11 +80,22 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
         return new String(sb);
     }
 
-    final Handler handler = new Handler();
+    private void startSendingMessages(int interval) {
+        messageTimer = new Timer();
+        messageTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                new SendMessageTask(getIP()).execute(str);
+            }
+        },0,interval);
+    }
+
+    private void stopSendingMessages() {
+        messageTimer.cancel();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
 
         // For printing the array
        //int arraySize = myArray.size();
@@ -122,16 +132,18 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
                     Control_matrix[0] = 1;
                     strChars[1] = '5';
                     strChars[4] = '1';
-
+                    str = String.valueOf(strChars);
+                    startSendingMessages(75);
+                    return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     Control_matrix[0] = 0;
                     strChars[1] = '0';
                     strChars[4] = '1';
+                    str = String.valueOf(strChars);
+                    stopSendingMessages();
+                    return true;
                 }
 
-
-                str = String.valueOf(strChars);
-                new SendMessageTask(getIP()).execute(str);
                 return false;
 
             }
@@ -147,14 +159,17 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
                     Control_matrix[1] = 1;
                     strChars[1] = '5';
                     strChars[4] = '0';
-
+                    str = String.valueOf(strChars);
+                    startSendingMessages(75);
+                    return true;
                 } else if (action == MotionEvent.ACTION_UP) {
                     Control_matrix[1] = 0;
                     strChars[1] = '0';
                     strChars[4] = '0';
+                    str = String.valueOf(strChars);
+                    stopSendingMessages();
+                    return true;
                 }
-                str = String.valueOf(strChars);
-                new SendMessageTask(getIP()).execute(str);
                 return false;
 
             }
@@ -170,13 +185,17 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
                     Control_matrix[2] = 1;
                     strChars[6] = '5';
                     strChars[9] = '1';
+                    str = String.valueOf(strChars);
+                    startSendingMessages(50);
+                    return true;
                 } else if (action == MotionEvent.ACTION_UP) {
                     Control_matrix[2] = 0;
                     strChars[6] = '0';
                     strChars[9] = '1';
+                    str = String.valueOf(strChars);
+                    stopSendingMessages();
+                    return true;
                 }
-                str = String.valueOf(strChars);
-                new SendMessageTask(getIP()).execute(str);
                 return false;
 
             }
@@ -192,13 +211,17 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
                     Control_matrix[3] = 1;
                     strChars[6] = '5';
                     strChars[9] = '0';
+                    str = String.valueOf(strChars);
+                    startSendingMessages(50);
+                    return true;
                 } else if (action == MotionEvent.ACTION_UP) {
                     Control_matrix[3] = 0;
                     strChars[6] = '0';
                     strChars[9] = '0';
+                    str = String.valueOf(strChars);
+                    stopSendingMessages();
+                    return true;
                 }
-                str = String.valueOf(strChars);
-                new SendMessageTask(getIP()).execute(str);
                 return false;
 
             }
@@ -229,11 +252,6 @@ public class ControlActivity extends AppCompatActivity implements View.OnTouchLi
 
         setTitle(R.string.title_connecting);
         new DoRead().execute(URL);
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
     }
 
     @Override
