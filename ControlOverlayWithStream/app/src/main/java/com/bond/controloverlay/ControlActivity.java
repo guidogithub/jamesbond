@@ -33,7 +33,7 @@ import java.util.TimerTask;
 
 import static java.net.InetAddress.getByName;
 
-public class ControlActivity extends AppCompatActivity {
+public class ControlActivity extends AppCompatActivity implements View.OnTouchListener {
     int[] Control_matrix;
     private static final boolean DEBUG = false;
     private static final String TAG = "MJPEG";
@@ -313,6 +313,11 @@ public class ControlActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
     }
 
     public class DoRead extends AsyncTask<String, Void, MjpegInputStream> {
