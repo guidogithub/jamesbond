@@ -136,43 +136,43 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                         }
                         int ret = mIn.readMjpegFrame(bmp);
 
-                        if (ret == -1) {
-                            ((MjpegActivity) saved_context).setImageError();
-                            return;
-                        }
+                        if (ret != -1) {
+                            //((MjpegActivity) saved_context).setImageError();
+                            //return;
 
-                        destRect = destRect(bmp.getWidth(), bmp.getHeight());
+                            destRect = destRect(bmp.getWidth(), bmp.getHeight());
 
-                        c = mSurfaceHolder.lockCanvas();
-                        synchronized (mSurfaceHolder) {
+                            c = mSurfaceHolder.lockCanvas();
+                            synchronized (mSurfaceHolder) {
 
-                            if (c != null && bmp != null && destRect != null && p != null) {
-                                c.drawBitmap(bmp, null, destRect, p);
-                            }
-
-                            if (showFps) {
-                                p.setXfermode(mode);
-                                if (ovl != null) {
-
-                                    // false indentation to fix forum layout
-                                    height = ((ovlPos & 1) == 1) ? destRect.top : destRect.bottom - ovl.getHeight();
-                                    width = ((ovlPos & 8) == 8) ? destRect.left : destRect.right - ovl.getWidth();
-
-                                    c.drawBitmap(ovl, width, height, null);
+                                if (c != null && bmp != null && destRect != null && p != null) {
+                                    c.drawBitmap(bmp, null, destRect, p);
                                 }
-                                p.setXfermode(null);
-                                frameCounter++;
-                                if ((System.currentTimeMillis() - start) >= 1000) {
-                                    fps = String.valueOf(frameCounter) + "fps";
-                                    frameCounter = 0;
-                                    start = System.currentTimeMillis();
-                                    if (ovl != null) ovl.recycle();
 
-                                    ovl = makeFpsOverlay(overlayPaint);
+                                if (showFps) {
+                                    p.setXfermode(mode);
+                                    if (ovl != null) {
+
+                                        // false indentation to fix forum layout
+                                        height = ((ovlPos & 1) == 1) ? destRect.top : destRect.bottom - ovl.getHeight();
+                                        width = ((ovlPos & 8) == 8) ? destRect.left : destRect.right - ovl.getWidth();
+
+                                        c.drawBitmap(ovl, width, height, null);
+                                    }
+                                    p.setXfermode(null);
+                                    frameCounter++;
+                                    if ((System.currentTimeMillis() - start) >= 1000) {
+                                        fps = String.valueOf(frameCounter) + "fps";
+                                        frameCounter = 0;
+                                        start = System.currentTimeMillis();
+                                        if (ovl != null) ovl.recycle();
+
+                                        ovl = makeFpsOverlay(overlayPaint);
+                                    }
                                 }
+
+
                             }
-
-
                         }
 
                     } catch (IOException e) {
